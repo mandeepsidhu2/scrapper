@@ -4,7 +4,6 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.PORT || 8080;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : false}));
@@ -12,7 +11,10 @@ app.use(bodyParser.urlencoded({extended : false}));
 app.engine('handlebars', exphbs({ defaultLayout : 'main'}));
 app.set('view engine','handlebars');
 
+app.listen(process.env.PORT || 8080);
+
 app.get('/ping',function (req,res) { 
+    console.log('pong')
   res.send("pong")    
 })
 
@@ -48,6 +50,3 @@ let datas = [];
     res.end(JSON.stringify(datas, null, 3));
     })
 })
-app.listen(port, () => {
-    console.log(`started on port: ${port}`);
-});
