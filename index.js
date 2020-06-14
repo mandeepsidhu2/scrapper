@@ -12,7 +12,9 @@ app.use(bodyParser.urlencoded({extended : false}));
 app.engine('handlebars', exphbs({ defaultLayout : 'main'}));
 app.set('view engine','handlebars');
 
-app.get('/', (req, res) => res.render('index', { layout: 'main' }));
+app.get('/ping',function (req,res) { 
+  res.send("pong")    
+})
 
 app.get('/medium',function (req,res) {
 let datas = [];
