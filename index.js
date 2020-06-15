@@ -34,8 +34,12 @@ app.get('/medium',function (req,res) {
           let creator=item.creator
           let link=item.link
           let categories=item.categories
-          let contentSnippet=item.contentSnippet
-          if(contentSnippet==null)contentSnippet=""
+          let contentSnippet=""
+          if(item.contentSnippet!=null){
+            let x=item.contentSnippet.split(".")
+            for(let i=0;i<5;i++)
+            contentSnippet+=x[i]
+          }
          data={
              title,
              creator,
@@ -67,8 +71,12 @@ app.get('/medium',function (req,res) {
           let creator=item.creator
           let link=item.link
           let categories=item.categories
-          let contentSnippet=item.contentSnippet
-          if(contentSnippet==null)contentSnippet=""
+          let contentSnippet=""
+          if(item.contentSnippet!=null){
+            let x=item.contentSnippet.split(".")
+            for(let i=0;i<5;i++)
+            contentSnippet+=x[i]
+          }
           data={
               title,
               creator,
@@ -99,8 +107,12 @@ app.get('/medium',function (req,res) {
           let creator=item.author
           let link=item.link
          let categories=""
-          let contentSnippet=item.contentSnippet
-          if(contentSnippet==null)contentSnippet=""
+         let contentSnippet=""
+         if(item.contentSnippet!=null){
+           let x=item.contentSnippet.split(".")
+           for(let i=0;i<5;i++)
+           contentSnippet+=x[i]
+         }
           data={
               title,
               creator,
@@ -114,4 +126,3 @@ app.get('/medium',function (req,res) {
         res.end(JSON.stringify(datas, null, 3));
       })();
  });
-//dev.to/feed/tag/[tag]
