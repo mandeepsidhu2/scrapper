@@ -1,9 +1,9 @@
-const cheerio = require('cheerio');
+
 const request = require('request');
 const express = require('express');
-
-
 const app = express();
+let Parser = require('rss-parser');
+let parser = new Parser();
 
 
 app.listen(process.env.PORT || 8080);
@@ -11,37 +11,33 @@ app.listen(process.env.PORT || 8080);
 app.get('/ping',function (req,res) { 
     console.log('pong')
   res.send("pong")    
-})
-
+});
 app.get('/medium',function (req,res) {
-let datas = [];
-    tag=req.query.topic
-    console.log(tag)
-    request(`https://medium.com/search?q=${tag}`,(err,response,html) => {
-
-     if(response.statusCode === 200){
-        const $ = cheerio.load(html);
-
-        $('.js-block').each((i,el) => {
-            if(i>9)
+    
+    (async () => {
+        let tag=req.query.topic
+        console.log(tag)
+        let feed = await parser.parseURL(`https://medium.com/feed/faun/tagged/${tag}`);
+        console.log(feed.title);
+        datas=[]
+        let i=0
+        feed.items.forEach(item => {
+            i=i+1
+            if(i>10)
             return
-            const title = $(el).find('h3').text();
-            const article = $(el).find('.postArticle-content').find('a').attr('href');
-            const image=$(el).find('.postArticle-content').find('img').attr('src');
-            let data = {
-                title,
-                article,
-                image
-            }
-            
-            datas.push(data);
-          
-        })  
-     }
-
-     
-    console.log(datas);
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(datas, null, 3));
-    })
-})
+          let title=item.title
+          let creator=item.creator
+          let link=item.link
+          let categories=item.categories
+         data={
+             title,
+             creator,
+             link,
+             categories
+         }
+         datas.push(data)
+        });
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(datas, null, 3));
+      })();
+ });
