@@ -2,6 +2,8 @@
 const request = require('request');
 const express = require('express');
 const app = express();
+var cors = require('cors');
+
 let Parser = require('rss-parser');
 let parser = new Parser({
     customFields: {
@@ -11,6 +13,7 @@ let parser = new Parser({
 
 
 app.listen(process.env.PORT || 8080);
+app.use(cors());
 
 app.get('/ping',function (req,res) { 
     console.log('pong')
