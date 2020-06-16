@@ -5,11 +5,12 @@ const app = express();
 var cors = require('cors');
 const redis = require("redis");
 var async = require("async");
-const client = redis.createClient();
+const client = redis.createClient(process.env.REDIS_URL);
 
 client.on("error", function(error) {
     console.error(error);
   });
+
 // client.incr("k1",redis.print)
 // client.get("k1", function(err, reply) {
 //     console.log(reply);
