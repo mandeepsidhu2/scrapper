@@ -3,6 +3,43 @@ const request = require('request');
 const express = require('express');
 const app = express();
 var cors = require('cors');
+const redis = require("redis");
+var async = require("async");
+const client = redis.createClient();
+
+client.on("error", function(error) {
+    console.error(error);
+  });
+// client.incr("k1",redis.print)
+// client.get("k1", function(err, reply) {
+//     console.log(reply);
+//   });
+// client.incr("k1",redis.print)
+// client.incr("k1",redis.print)
+
+app.get('/hits', function (req, res) {
+    var jobs = [];
+    client.keys('*', function (err, keys) {
+        if (err) return console.log(err);
+        if(keys){
+            async.map(keys, function(key, cb) {
+               client.get(key, function (error, value) {
+                    if (error) return cb(error);
+                    var job = {};
+                    if(value!=null && value!=undefined){
+                    job['topic']=key;
+                    job['hits']=value;
+                    cb(null, job);
+                    }
+                }); 
+            }, function (error, results) {
+               if (error) return console.log(error);
+               console.log(results);
+               res.json({data:results});
+            });
+        }
+    });
+});
 
 let Parser = require('rss-parser');
 let parser = new Parser({
@@ -25,11 +62,11 @@ app.get('/medium',function (req,res) {
     
     (async () => {
         let tag=req.query.topic
+        client.incr(tag,redis.print)
         let feed = await parser.parseURL(`https://medium.com/feed/faun/tagged/${tag}`);
         datas=[]
         let i=0
         feed.items.forEach(item => {
-            console.log(item['content:encoded']);
             i=i+1
             if(i>10)
             return
@@ -67,7 +104,7 @@ app.get('/medium',function (req,res) {
     
     (async () => {
         let tag=req.query.topic
-       // console.log(tag)
+        client.incr(tag,redis.print)
         let feed = await parser.parseURL(`https://dev.to/feed/tag/${tag}`);
         
         datas=[]
@@ -108,8 +145,8 @@ app.get('/medium',function (req,res) {
     
     (async () => {
         let tag=req.query.topic
+        client.incr(tag,redis.print)
         let feed = await parser.parseURL(`https://www.reddit.com/r/${tag}/.rss`);
-        
         datas=[]
         let i=0
         feed.items.forEach(item => {
