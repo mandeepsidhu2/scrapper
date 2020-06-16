@@ -105,7 +105,6 @@ app.get('/medium',function (req,res) {
     
     (async () => {
         let tag=req.query.topic
-        client.incr(tag,redis.print)
         let feed = await parser.parseURL(`https://dev.to/feed/tag/${tag}`);
         
         datas=[]
@@ -146,7 +145,6 @@ app.get('/medium',function (req,res) {
     
     (async () => {
         let tag=req.query.topic
-        client.incr(tag,redis.print)
         let feed = await parser.parseURL(`https://www.reddit.com/r/${tag}/.rss`);
         datas=[]
         let i=0
