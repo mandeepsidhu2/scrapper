@@ -6,17 +6,25 @@ var cors = require('cors');
 const redis = require("redis");
 var async = require("async");
 const client = redis.createClient(process.env.REDIS_URL);
+let Parser = require('rss-parser');
+let parser = new Parser({
+    customFields: {
+      item: ['contentSnippet','categories','image/url','image'],
+    }
+  });
+
+
+app.listen(process.env.PORT || 8080);
+app.use(cors());
 
 client.on("error", function(error) {
     console.error(error);
   });
 
-// client.incr("k1",redis.print)
-// client.get("k1", function(err, reply) {
-//     console.log(reply);
-//   });
-// client.incr("k1",redis.print)
-// client.incr("k1",redis.print)
+app.get('/ping',function (req,res) { 
+    console.log('pong')
+  res.send("pong")    
+});
 
 app.get('/hits', function (req, res) {
     var jobs = [];
@@ -40,22 +48,6 @@ app.get('/hits', function (req, res) {
             });
         }
     });
-});
-
-let Parser = require('rss-parser');
-let parser = new Parser({
-    customFields: {
-      item: ['contentSnippet','categories','image/url','image'],
-    }
-  });
-
-
-app.listen(process.env.PORT || 8080);
-app.use(cors());
-
-app.get('/ping',function (req,res) { 
-    console.log('pong')
-  res.send("pong")    
 });
 
 
