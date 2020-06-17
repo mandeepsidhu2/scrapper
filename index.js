@@ -20,7 +20,7 @@ app.use(cors());
 client.on("error", function(error) {
     console.error(error);
   });
-client.del("feed['website']");
+
 app.get('/ping',function (req,res) { 
     console.log('pong')
   res.send("pong")    
